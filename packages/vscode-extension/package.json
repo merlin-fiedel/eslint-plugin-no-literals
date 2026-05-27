@@ -1,0 +1,26 @@
+{
+  "name": "vscode-no-literals",
+  "displayName": "No Literals",
+  "description": "Surfaces no-literals ESLint violations as native VS Code diagnostics",
+  "version": "0.1.0",
+  "publisher": "no-literals",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Linters"],
+  "activationEvents": ["onLanguage:typescript", "onLanguage:typescriptreact"],
+  "main": "./dist/extension.js",
+  "contributes": {},
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "eslint-plugin-no-literals": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.4"
+  }
+}
