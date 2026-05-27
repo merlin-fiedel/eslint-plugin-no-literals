@@ -108,6 +108,7 @@ export const noLiterals = createRule<Options, MessageIds>({
   },
 });
 
+// True if the node is anywhere inside a ClassBody (handles nested classes correctly).
 function isInsideClassBody(node: TSESTree.Node): boolean {
   let current: TSESTree.Node | null | undefined = node.parent;
   while (current != null) {
@@ -117,6 +118,7 @@ function isInsideClassBody(node: TSESTree.Node): boolean {
   return false;
 }
 
+// True if the node is anywhere inside a Decorator — covers both class-level and member-level decorators.
 function isInsideDecorator(node: TSESTree.Node): boolean {
   let current: TSESTree.Node | null | undefined = node.parent;
   while (current != null) {
@@ -126,10 +128,12 @@ function isInsideDecorator(node: TSESTree.Node): boolean {
   return false;
 }
 
+// True if the node is the module specifier of a dynamic import() expression.
 function isDynamicImportSpecifier(node: TSESTree.Node): boolean {
   return node.parent?.type === AST_NODE_TYPES.ImportExpression;
 }
 
+// True if the node is a non-computed property key in an object literal ({ 'key': value }).
 function isObjectPropertyKey(node: TSESTree.Node): boolean {
   const { parent } = node;
   if (parent?.type !== AST_NODE_TYPES.Property) return false;
@@ -137,6 +141,7 @@ function isObjectPropertyKey(node: TSESTree.Node): boolean {
   return !prop.computed && prop.key === node;
 }
 
+// True if the node is the key of a computed member expression (obj['key']).
 function isComputedMemberKey(node: TSESTree.Node): boolean {
   const { parent } = node;
   if (parent?.type !== AST_NODE_TYPES.MemberExpression) return false;
@@ -144,6 +149,8 @@ function isComputedMemberKey(node: TSESTree.Node): boolean {
   return member.computed && member.property === node;
 }
 
+// True if the node is the string operand in a typeof comparison (typeof x === 'string').
+// These are language-spec idioms that cannot be replaced with an enum or constant.
 function isTypeofComparison(node: TSESTree.Node): boolean {
   const { parent } = node;
   if (parent?.type !== AST_NODE_TYPES.BinaryExpression) return false;
@@ -155,6 +162,7 @@ function isTypeofComparison(node: TSESTree.Node): boolean {
   );
 }
 
+// True if the node is an argument (direct or nested) of a call whose name is in ignoredCalls.
 function isInsideIgnoredCall(
   node: TSESTree.Node,
   ignoredCalls: readonly string[],

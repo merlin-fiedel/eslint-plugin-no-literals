@@ -20,12 +20,16 @@
     "eslint",
     "eslint-plugin",
     "typescript",
-    "literals",
-    "hardcoded-strings",
-    "i18n",
     "angular",
+    "i18n",
+    "literals",
+    "no-literals",
+    "hardcoded-strings",
     "lint"
   ],
+  "engines": {
+    "node": ">=20"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -43,8 +47,8 @@
     "test:watch": "vitest"
   },
   "peerDependencies": {
-    "@typescript-eslint/parser": "^8.0.0",
-    "eslint": "^9.0.0"
+    "@typescript-eslint/parser": ">=7.0.0",
+    "eslint": ">=9.0.0"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.0.0"

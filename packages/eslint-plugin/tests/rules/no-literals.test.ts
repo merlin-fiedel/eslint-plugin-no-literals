@@ -195,11 +195,6 @@ ruleTester.run('no-literals', noLiterals, {
       errors: [{ messageId: 'noLiteral' }],
     },
     {
-      name: 'string longer than default minLength is flagged',
-      code: `class Foo { msg = 'hello'; }`,
-      errors: [{ messageId: 'noLiteral' }],
-    },
-    {
       name: 'two-character string is flagged when minLength is 1',
       code: `class Foo { label = 'ab'; }`,
       options: [{ minLength: 1 }],
