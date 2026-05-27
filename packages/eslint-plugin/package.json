@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-no-literals",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ESLint plugin that flags hardcoded string literals inside TypeScript class bodies",
   "type": "module",
   "main": "./dist/index.js",
