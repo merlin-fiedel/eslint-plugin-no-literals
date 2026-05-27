@@ -1,18 +1,34 @@
 # eslint-plugin-no-literals
 
-An ESLint plugin that flags hardcoded string literals inside TypeScript class bodies, encouraging the use of enums, constants, or i18n keys instead.
+An ESLint plugin that flags hardcoded string literals inside TypeScript class bodies, encouraging the use of enums, constants, or i18n keys instead. Works with any TypeScript project that uses classes — Angular, NestJS, React class components, and more.
 
 ## Why
 
-Hardcoded strings scattered across service and component classes are one of the most common sources of:
+Hardcoded strings scattered across TypeScript classes are one of the most common sources of:
 
 - **Typo bugs** — `'faild'` vs `'failed'` in two different error handlers
 - **i18n debt** — strings baked into logic instead of going through a translation layer
 - **Magic values** — route paths, API endpoints, and event names with no single source of truth
 
-> **Security bonus:** hardcoded API keys and client IDs are string literals too. Real-world testing against open-source Angular projects surfaced a Flickr API key and a Spotify client ID sitting directly in class bodies. This rule catches them automatically as part of its normal operation.
+> **Security bonus:** hardcoded API keys and client IDs are string literals too. Real-world testing against open-source TypeScript projects surfaced a Flickr API key and a Spotify client ID sitting directly in class bodies. This rule catches them automatically as part of its normal operation.
 
 This plugin surfaces those strings at lint time so they can be moved to typed constants or enums before they spread.
+
+## Compatibility
+
+The rule targets **class bodies** — it is silent anywhere there is no class declaration.
+
+| Framework / pattern | Supported? |
+| --- | --- |
+| Angular — services, components, guards, interceptors | ✅ Yes |
+| NestJS — controllers, services, modules | ✅ Yes |
+| React — class components (`extends Component`) | ✅ Yes |
+| Any TypeScript project using classes | ✅ Yes |
+| React functional components (hooks-based) | ❌ No class body — rule is silent |
+| Vue composition API | ❌ No class body — rule is silent |
+| HTML / template files | ❌ Only `.ts` / `.tsx` files are scanned |
+
+> **React note:** modern React codebases are mostly functional components, so violations will only appear in the minority of files that still use class components. This is expected and correct — the rule will not produce false positives on `useState`, `useEffect`, or JSX in function bodies.
 
 ## Installation
 
