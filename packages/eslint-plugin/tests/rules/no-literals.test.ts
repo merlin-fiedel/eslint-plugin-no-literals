@@ -146,6 +146,20 @@ ruleTester.run('no-literals', noLiterals, {
       code: `class Foo { check(x: unknown) { return typeof x === 'number'; } }`,
     },
 
+    // ── TypeScript type annotation positions ──────────────────────────────
+    {
+      name: 'string literal in method parameter union type annotation is ignored',
+      code: `class Foo { notify(eventType: 'play' | 'pause' | 'stop') {} }`,
+    },
+    {
+      name: 'string literal in class property union type annotation is ignored',
+      code: `class Foo { status: 'active' | 'inactive' | 'pending'; }`,
+    },
+    {
+      name: 'string literal in method return type annotation is ignored',
+      code: `class Foo { mode = ''; getMode(): 'read' | 'write' { return this.mode as 'read' | 'write'; } }`,
+    },
+
     // ── no-literals-ignore escape hatch ───────────────────────────────────
     {
       name: 'inline no-literals-ignore comment suppresses the violation',

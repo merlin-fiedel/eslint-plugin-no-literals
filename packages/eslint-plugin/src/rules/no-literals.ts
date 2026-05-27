@@ -94,6 +94,7 @@ export const noLiterals = createRule<Options, MessageIds>({
         if (isComputedMemberKey(node)) return;
         if (isObjectPropertyKey(node)) return;
         if (isTypeofComparison(node)) return;
+        if (isInsideTypeAnnotation(node)) return;
         if (isInsideIgnoredCall(node, ignoredCalls)) return;
         if (compiledIgnorePatterns.some((re) => re.test(value))) return;
         if (hasIgnoreComment(node, sourceCode)) return;
@@ -160,6 +161,12 @@ function isTypeofComparison(node: TSESTree.Node): boolean {
     other.type === AST_NODE_TYPES.UnaryExpression &&
     (other as TSESTree.UnaryExpression).operator === 'typeof'
   );
+}
+
+// True if the node is inside a TypeScript type annotation (e.g. union type literals like 'play' | 'pause').
+// These are compile-time type positions and cannot be replaced with runtime constants.
+function isInsideTypeAnnotation(node: TSESTree.Node): boolean {
+  return node.parent?.type === AST_NODE_TYPES.TSLiteralType;
 }
 
 // True if the node is an argument (direct or nested) of a call whose name is in ignoredCalls.
