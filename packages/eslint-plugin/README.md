@@ -47,6 +47,12 @@ export default [
 
 > **Requires ESLint ≥ 9** (flat config only). Legacy `.eslintrc` is not supported.
 
+Then run ESLint against your source files:
+
+```sh
+npx eslint src/
+```
+
 ## Rule: `no-literals/no-literals`
 
 Flags string literals that appear inside a class body — in property initializers, method bodies, getters, and setters.
