@@ -98,6 +98,54 @@ ruleTester.run('no-literals', noLiterals, {
       `,
     },
 
+    // ── quoted object property keys ──────────────────────────────────────
+    {
+      name: 'quoted key in a shallow object literal is ignored',
+      code: `class Foo { map = { 'someKey': 42 }; }`,
+    },
+    {
+      name: 'quoted keys in a nested object literal are ignored',
+      code: `class Foo { data = { 'AD': { 'latitude': 42.5, 'longitude': 1.5 } }; }`,
+    },
+    {
+      name: 'quoted keys assigned via this inside a method are ignored',
+      code: `class Foo { init() { this.cfg = { 'width': 100, 'height': 200 }; } }`,
+    },
+
+    // ── dynamic import specifier ──────────────────────────────────────────
+    {
+      name: 'dynamic import specifier in async method is ignored',
+      code: `class Foo { async load() { const { bar } = await import('some-module'); } }`,
+    },
+    {
+      name: 'dynamic import specifier in property initializer is ignored',
+      code: `class Foo { mod = import('some-module'); }`,
+    },
+
+    // ── computed member expression key ────────────────────────────────────
+    {
+      name: 'string used as computed member key (SimpleChanges-style) is ignored',
+      code: `class Foo { check(changes: any) { const x = changes['propName']; } }`,
+    },
+    {
+      name: 'string used as computed key on this is ignored',
+      code: `class Foo { get() { return this.store['someKey']; } }`,
+    },
+
+    // ── typeof comparison operands ────────────────────────────────────────
+    {
+      name: 'typeof x === "string" right-hand operand is ignored',
+      code: `class Foo { check(x: unknown) { return typeof x === 'string'; } }`,
+    },
+    {
+      name: 'typeof x !== "undefined" right-hand operand is ignored',
+      code: `class Foo { check(x: unknown) { return typeof x !== 'undefined'; } }`,
+    },
+    {
+      name: 'typeof x === "number" right-hand operand is ignored',
+      code: `class Foo { check(x: unknown) { return typeof x === 'number'; } }`,
+    },
+
     // ── no-literals-ignore escape hatch ───────────────────────────────────
     {
       name: 'inline no-literals-ignore comment suppresses the violation',
@@ -184,6 +232,27 @@ ruleTester.run('no-literals', noLiterals, {
       name: 'string in non-ignored call expression is flagged',
       code: `class Foo { run() { alert('something wrong'); } }`,
       errors: [{ messageId: 'noLiteral', data: { value: 'something wrong' } }],
+    },
+
+    // ── object property key guard boundary ───────────────────────────────
+    {
+      name: 'string value of a quoted-key property is still flagged',
+      code: `class Foo { data = { 'myKey': 'flagged value' }; }`,
+      errors: [{ messageId: 'noLiteral', data: { value: 'flagged value' } }],
+    },
+
+    // ── computed member key guard boundary ───────────────────────────────
+    {
+      name: 'string assigned to a computed member (value side) is still flagged',
+      code: `class Foo { set(obj: any) { obj['key'] = 'flagged value'; } }`,
+      errors: [{ messageId: 'noLiteral', data: { value: 'flagged value' } }],
+    },
+
+    // ── typeof guard boundary: non-typeof binary comparison still flagged ──
+    {
+      name: 'string compared to another string (not typeof) is still flagged',
+      code: `class Foo { check(s: string) { return s === 'pending'; } }`,
+      errors: [{ messageId: 'noLiteral', data: { value: 'pending' } }],
     },
 
     // ── no-literals-ignore: only exact match suppresses ───────────────────

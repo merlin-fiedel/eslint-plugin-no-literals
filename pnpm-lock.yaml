@@ -37,22 +37,6 @@ importers:
         specifier: ^2.0.0
         version: 2.1.9(@types/node@20.19.41)
 
-  packages/vscode-extension:
-    dependencies:
-      eslint-plugin-no-literals:
-        specifier: workspace:*
-        version: link:../eslint-plugin
-    devDependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.19.41
-      '@types/vscode':
-        specifier: ^1.90.0
-        version: 1.120.0
-      typescript:
-        specifier: ^5.5.4
-        version: 5.9.3
-
 packages:
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -403,9 +387,6 @@ packages:
 
   '@types/node@20.19.41':
     resolution: {integrity: sha512-ECymXOukMnOoVkC2bb1Vc/w/836DXncOg5m8Xj1RH7xSHZJWNYY6Zh7EH477vcnD5egKNNfy2RpNOmuChhFPgQ==}
-
-  '@types/vscode@1.120.0':
-    resolution: {integrity: sha512-feaT4Rst+FkTch5zz/ZbNCxoIvo55YU80Be2kiL7OJcod4+CUYf2lUBPdIJzozNnSEMq1VRTGrWEcCGFB3fBmA==}
 
   '@typescript-eslint/parser@8.60.0':
     resolution: {integrity: sha512-fcqpj/MyK4sxDPcbe7STNPbpQL4RLZOPWuaTmwZYuc+hJKzRf58yRxfhqGpc6PIq9ZyfSBpfHgmUHmHs0KwHwg==}
@@ -1198,8 +1179,6 @@ snapshots:
   '@types/node@20.19.41':
     dependencies:
       undici-types: 6.21.0
-
-  '@types/vscode@1.120.0': {}
 
   '@typescript-eslint/parser@8.60.0(eslint@9.39.4)(typescript@5.9.3)':
     dependencies:

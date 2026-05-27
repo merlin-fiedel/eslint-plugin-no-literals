@@ -10,6 +10,8 @@ Hardcoded strings scattered across service and component classes are one of the 
 - **i18n debt** — strings baked into logic instead of going through a translation layer
 - **Magic values** — route paths, API endpoints, and event names with no single source of truth
 
+> **Security bonus:** hardcoded API keys and client IDs are string literals too. Real-world testing against open-source Angular projects surfaced a Flickr API key and a Spotify client ID sitting directly in class bodies. This rule catches them automatically as part of its normal operation.
+
 This plugin surfaces those strings at lint time so they can be moved to typed constants or enums before they spread.
 
 ## Installation
@@ -54,7 +56,7 @@ Flags string literals that appear inside a class body — in property initialize
 All options are passed as a single configuration object.
 
 | Option | Type | Default | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `minLength` | `number` | `2` | Ignore strings shorter than this many characters. Useful to allow single-character sentinels. |
 | `ignorePatterns` | `string[]` | `[]` | Array of regular expression strings. Literals matching any pattern are ignored. |
 | `ignoredCallExpressions` | `string[]` | `['console.log', 'console.error', 'console.warn']` | Dot-separated callee names whose string arguments are ignored. |
@@ -164,7 +166,7 @@ Use sparingly. The recommended approach is to extract the string to a typed cons
 ## What is and isn't flagged
 
 | Location | Flagged? |
-|---|---|
+| --- | --- |
 | Class property initializer | ✅ Yes |
 | Method / getter / setter body | ✅ Yes |
 | Top-level `const` / `let` / `var` | ❌ No |
@@ -174,6 +176,65 @@ Use sparingly. The recommended approach is to extract the string to a typed cons
 | Strings below `minLength` | ❌ No |
 | Strings matching `ignorePatterns` | ❌ No |
 | Files matching `ignoreFiles` | ❌ No |
+| `typeof` comparison operands (`typeof x === 'string'`) | ❌ No |
+| Dynamic `import()` specifiers | ❌ No |
+| Quoted object property keys (`{ 'key': value }`) | ❌ No |
+| Computed member access (`obj['key']`) | ❌ No |
+
+## Known patterns and workarounds
+
+### Third-party library config strings
+
+Some libraries accept strings from a fixed, documented set (e.g. ECharts `'bar'`, `'category'`). These are effectively constants defined by the library contract, not magic values you own. Suppress them with a regex that matches only that domain:
+
+```js
+ignorePatterns: ['^(bar|line|scatter|category|value)$']
+```
+
+### Canvas / DOM typed string unions
+
+`ctx.globalCompositeOperation = 'lighter'` and `ctx.lineCap = 'round'` look like magic strings but TypeScript already enforces correctness via typed unions (`CanvasCompositeOperation`, `CanvasLineCap`). The same applies to `scrollIntoView({ behavior: 'smooth', block: 'center' })`. Use `ignorePatterns` to suppress the specific values your codebase uses:
+
+```js
+ignorePatterns: ['^(lighter|source-over|round|butt|square|smooth|center|start|end)$']
+```
+
+Type-aware suppression (automatically skipping literals assigned to DOM typed-union properties) is planned for a future release.
+
+### Angular query tokens — `contentChild` / `viewChild`
+
+`contentChild('listRef')` and `viewChild('header')` pass template reference variable names as strings. These are semantically identical to decorator metadata — the string must match the `#ref` name in the template. Add the Angular query APIs to `ignoredCallExpressions`:
+
+```js
+ignoredCallExpressions: [
+  'console.log', 'console.error', 'console.warn',
+  'contentChild', 'viewChild', 'contentChildren', 'viewChildren',
+]
+```
+
+### Angular CDK `ComponentHarness.hostSelector`
+
+`static hostSelector = 'app-slider'` must match the component's CSS selector exactly — it is test-harness metadata, not a runtime string. Either suppress the one occurrence with `// no-literals-ignore` or exclude it by pattern:
+
+```js
+ignorePatterns: ['^app-']
+```
+
+### TypeScript union switch-case values
+
+Exhaustive `switch` branches over a typed string union (`'error' | 'warning' | 'normal'`) are technically correct violations — an `enum` or `as const` object would be cleaner. Teams that deliberately prefer typed string unions can suppress the case values by pattern:
+
+```js
+ignorePatterns: ['^(error|warning|normal|success|pending)$']
+```
+
+### Inline mock and seed data
+
+Services or fixtures that contain large hardcoded datasets (names, labels, task descriptions) are expected to have many violations and are poor targets for this rule. Skip them entirely:
+
+```js
+ignoreFiles: ['**/*.mock.ts', '**/mock/**', '**/*.seed.ts', '**/fixtures/**']
+```
 
 ## Contributing
 

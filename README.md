@@ -11,7 +11,6 @@ See [`packages/eslint-plugin/README.md`](packages/eslint-plugin/README.md) for f
 ```text
 packages/
   eslint-plugin/    — the published ESLint plugin
-  vscode-extension/ — VS Code extension (uses the plugin)
 playground/         — local dogfood project (not a workspace package)
 ```
 

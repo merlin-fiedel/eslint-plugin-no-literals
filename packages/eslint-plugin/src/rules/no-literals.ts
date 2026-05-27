@@ -90,6 +90,10 @@ export const noLiterals = createRule<Options, MessageIds>({
         if (value.length < minLength) return;
         if (!isInsideClassBody(node)) return;
         if (isInsideDecorator(node)) return;
+        if (isDynamicImportSpecifier(node)) return;
+        if (isComputedMemberKey(node)) return;
+        if (isObjectPropertyKey(node)) return;
+        if (isTypeofComparison(node)) return;
         if (isInsideIgnoredCall(node, ignoredCalls)) return;
         if (compiledIgnorePatterns.some((re) => re.test(value))) return;
         if (hasIgnoreComment(node, sourceCode)) return;
@@ -120,6 +124,35 @@ function isInsideDecorator(node: TSESTree.Node): boolean {
     current = current.parent;
   }
   return false;
+}
+
+function isDynamicImportSpecifier(node: TSESTree.Node): boolean {
+  return node.parent?.type === AST_NODE_TYPES.ImportExpression;
+}
+
+function isObjectPropertyKey(node: TSESTree.Node): boolean {
+  const { parent } = node;
+  if (parent?.type !== AST_NODE_TYPES.Property) return false;
+  const prop = parent as TSESTree.Property;
+  return !prop.computed && prop.key === node;
+}
+
+function isComputedMemberKey(node: TSESTree.Node): boolean {
+  const { parent } = node;
+  if (parent?.type !== AST_NODE_TYPES.MemberExpression) return false;
+  const member = parent as TSESTree.MemberExpression;
+  return member.computed && member.property === node;
+}
+
+function isTypeofComparison(node: TSESTree.Node): boolean {
+  const { parent } = node;
+  if (parent?.type !== AST_NODE_TYPES.BinaryExpression) return false;
+  const bin = parent as TSESTree.BinaryExpression;
+  const other = bin.left === node ? bin.right : bin.left;
+  return (
+    other.type === AST_NODE_TYPES.UnaryExpression &&
+    (other as TSESTree.UnaryExpression).operator === 'typeof'
+  );
 }
 
 function isInsideIgnoredCall(
