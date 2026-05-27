@@ -11,7 +11,31 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "typescript",
+    "literals",
+    "hardcoded-strings",
+    "i18n",
+    "angular",
+    "lint"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/merlin-fiedel/eslint-plugin-no-literals.git",
+    "directory": "packages/eslint-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/merlin-fiedel/eslint-plugin-no-literals/issues"
+  },
+  "homepage": "https://github.com/merlin-fiedel/eslint-plugin-no-literals/tree/main/packages/eslint-plugin#readme",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "typecheck": "tsc --noEmit",

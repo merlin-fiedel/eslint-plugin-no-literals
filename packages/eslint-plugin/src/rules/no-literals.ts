@@ -8,7 +8,6 @@ type Options = [
     ignorePatterns?: string[];
     ignoredCallExpressions?: string[];
     ignoreFiles?: string[];
-    severity?: 'error' | 'warn' | 'info';
   },
 ];
 
@@ -48,11 +47,6 @@ export const noLiterals = createRule<Options, MessageIds>({
             items: { type: 'string' },
             default: [],
           },
-          severity: {
-            type: 'string',
-            enum: ['error', 'warn', 'info'],
-            default: 'error',
-          },
         },
         additionalProperties: false,
       },
@@ -68,7 +62,6 @@ export const noLiterals = createRule<Options, MessageIds>({
       ignorePatterns: [],
       ignoredCallExpressions: [...DEFAULT_IGNORED_CALLS],
       ignoreFiles: [],
-      severity: 'error',
     },
   ],
   create(context, optionsWithDefault) {
