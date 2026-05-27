@@ -11,7 +11,7 @@ export default [
       'no-literals': noLiteralsPlugin,
     },
     rules: {
-      'no-literals/no-literals': 'error',
+      'no-literals/no-literals': 'warn',
     },
   },
 ];

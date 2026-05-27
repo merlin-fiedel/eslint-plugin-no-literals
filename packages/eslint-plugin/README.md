@@ -39,7 +39,7 @@ export default [
       'no-literals': noLiterals,
     },
     rules: {
-      'no-literals/no-literals': 'error',
+      'no-literals/no-literals': 'warn',
     },
   },
 ];
@@ -120,7 +120,7 @@ export class UserService {
 // eslint.config.mjs
 rules: {
   'no-literals/no-literals': [
-    'error',
+    'warn',
     {
       // Only flag strings of 4+ characters (ignore short sentinels like 'px')
       minLength: 4,
